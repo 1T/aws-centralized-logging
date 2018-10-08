@@ -10,6 +10,12 @@ LOGGING_CONFIG = {
     'loggers': {
         'indexcleaner': {
             'level': INFO,
+        },
+        'curator': {
+            'level': ERROR,
+        },
+        'elasticsearch': {
+            'level': ERROR,
         }
     }
 }
