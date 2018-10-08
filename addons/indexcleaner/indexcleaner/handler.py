@@ -55,7 +55,7 @@ def cleaner(event, context):
 
     if ilo.working_list():
         delete_indices = curator.DeleteIndices(ilo)
-        delete_indices.do_dry_run()
+        delete_indices.do_action()
         logger.info("Deleted indices")
 
     ilo = filter(es, prefix, '%Y-%m-%d', age)
@@ -64,5 +64,5 @@ def cleaner(event, context):
 
     if ilo.working_list():
         delete_indices = curator.DeleteIndices(ilo)
-        delete_indices.do_dry_run()
+        delete_indices.do_action()
         logger.info("Deleted indices")
