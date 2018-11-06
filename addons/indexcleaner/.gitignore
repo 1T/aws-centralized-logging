@@ -7,4 +7,5 @@ include/
 bin/
 .serverless/
 .idea/
+.DS_Store
 .Python

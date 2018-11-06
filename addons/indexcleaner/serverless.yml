@@ -27,3 +27,7 @@ functions:
     handler: indexcleaner/handler.cleaner
     events:
       - schedule: cron(0 4 * * ? *)
+  snapshot:
+    handler: indexcleaner/handler.snapshot
+    events:
+      - schedule: cron(0 3 * * ? *)
