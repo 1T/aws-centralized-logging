@@ -66,7 +66,7 @@ def snapshot(event, context):
         yesterday = datetime.today() - timedelta(1)
         name = yesterday.strftime('%m-%d-%Y')
         snapshot_indices = curator.Snapshot(ilo, repository=SNAPSHOT_REPOSITORY,
-                                            name=name)
+                                            name=name, wait_for_completion=False)
         snapshot_indices.do_action()
         logger.info(f'snapshot indices to {name}')
 
