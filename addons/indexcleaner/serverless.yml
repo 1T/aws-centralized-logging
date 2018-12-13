@@ -30,4 +30,4 @@ functions:
   snapshot:
     handler: indexcleaner/handler.snapshot
     events:
-      - schedule: cron(0 3 * * ? *)
+      - schedule: cron(0 7 * * ? *)
