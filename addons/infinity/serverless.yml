@@ -1,0 +1,29 @@
+service: infinitylogging
+
+provider:
+  name: aws
+  runtime: python3.6
+  region: us-east-1
+  stage: prod
+  deploymentBucket:
+    name: 1ticket-logging-code-releases
+    serverSideEncryption: AES256
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "es:*"
+      Resource: "arn:aws:es:us-east-1:405028608951:domain/centralized-logging/*"
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: false
+
+functions:
+  save_sh_putpost:
+    handler: infinity/handler.save_stubhub_putpost_requests
+    events:
+      - schedule: cron(0 2 * * ? *)
