@@ -70,7 +70,7 @@ def save_stubhub_putpost_requests(event, context):
                         "must": [
                             {
                                 "query_string": {
-                                    "query": "appname:shsyncx AND (message:\"POST https://api.stubhub.com\" OR message:\"PUT\nhttps://api.stubhub.com\")",
+                                    "query": "appname:shsyncx AND (message:\"POST https://api.stubhub.com\" OR message:\"PUT https://api.stubhub.com\")",
                                     "analyze_wildcard": True,
                                     "default_field": "*"
                                 }
