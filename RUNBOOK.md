@@ -99,4 +99,8 @@ We have setup Cloudwatch alarms to alert when free disk space drops below a cert
 * 30% Free Storage Space Threshold. FreeStorageSpace <= 150,000
 * 20% Free Storage Space Threshold. FreeStorageSpace <= 100,000
 
-The free storage space threshold is per node.  ElasticSearch tries to distribute the data evenly, but sometimes some node can take on more storage than the others, causing the free storage space to drop below the threshold.  For the 30% alarm, just continue to monitor, no action is likely needed.  For the 20% alarm, consider manually deleting the oldest index
+The free storage space threshold is per node.  ElasticSearch tries to distribute the data evenly, but sometimes a node can use more storage than the others, causing the free storage space to drop below the threshold for that node.  For the 30% alarm, just continue to monitor, no action is likely needed.  For the 20% alarm, consider manually deleting the oldest index
+
+## Infinity index
+
+We need to keep some log data around for an extended period.  For example, log entries related to event creation transactions on Stubhub must be kept in ElasticSearch for a year.  Our Broker Services members must search in Kibana to find requests/responses to Stubhub to prove to our customers that we're not at fault.  Refer to this page about the [infinity index](https://github.com/1T/aws-centralized-logging/tree/master/addons/infinity)
