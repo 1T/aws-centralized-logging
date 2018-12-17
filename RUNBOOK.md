@@ -84,3 +84,19 @@ in cloudformation and then redeploy through the console. After you redeploy
 through the console you need to go to systems manager -> parameter store and
 update the logging arns. This will require everyone in that account with logging
 to then re deploy so their stacks use the new logging streamer.
+
+# Managing Disk Space
+
+We are currently running the centralized-logging ElasticSearch instance on a cluster of 4 i3.large.elasticsearch servers, each with about 500GB of disk space, for a total of 2TB.  Our apps log on average about 25GB per day.  There is a new ElasticSearch index created for each day.  We aim to keep about 3 weeks worth of data live in ElasticSearch, and so we purge indices older than 18 days.  We take a snapshot of the previous index and store in S3, so old data can always be restored.
+
+* [Snapshot indices](https://github.com/1T/aws-centralized-logging/tree/master/addons/indexcleaner#creating-snapshots-of-indices)
+* [Purging old indices](https://github.com/1T/aws-centralized-logging/tree/master/addons/indexcleaner#purging-old-indices)
+
+## Alerting on low disk space
+
+We have setup Cloudwatch alarms to alert when free disk space drops below a certain threshold.  
+
+* 30% Free Storage Space Threshold. FreeStorageSpace <= 150,000
+* 20% Free Storage Space Threshold. FreeStorageSpace <= 100,000
+
+The free storage space threshold is per node.  ElasticSearch tries to distribute the data evenly, but sometimes some node can take on more storage than the others, causing the free storage space to drop below the threshold.  For the 30% alarm, just continue to monitor, no action is likely needed.  For the 20% alarm, consider manually deleting the oldest index
