@@ -13,7 +13,7 @@ logging.config.dictConfig(settings.LOGGING_CONFIG)
 AGE_KEY = 'AGE_KEY'
 AGE_DEFAULT_VALUE = 18
 PREFIX_KEY = 'PREFIX_KEY'
-PREFIX_DEFAULT_VALUE = 'cwl-|firehose-'
+PREFIX_DEFAULT_VALUE = 'cwl-|firehose-|portal-'
 SNAPSHOT_REPOSITORY = 'snapshot-repository'
 
 credentials = boto3.Session().get_credentials()
