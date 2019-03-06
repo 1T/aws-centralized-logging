@@ -45,7 +45,7 @@ custom:
         description: 'slow transactions'
         namespace: 'PERFORMANCE/PORTAL'
         metric: PORTAL_SLOW_TRANSACTIONS
-        threshold: 15
+        threshold: 10
         statistic: Sum
         period: 300
         evaluationPeriods: 6
