@@ -1,0 +1,57 @@
+service: kibanaalerts
+
+provider:
+  name: aws
+  runtime: python3.6
+  region: us-east-1
+  stage: prod
+  deploymentBucket:
+    name: 1ticket-logging-code-releases
+    serverSideEncryption: AES256
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "es:ESHttpGet"
+      Resource: "arn:aws:es:us-east-1:405028608951:domain/centralized-logging/*"
+    - Effect: "Allow"
+      Action:
+        - "cloudwatch:PutMetricData"
+      Resource: "*"
+
+functions:
+  slowportalalert:
+    handler: alerts/handler.slowportalalert
+    events:
+      - schedule: rate(5 minutes)
+
+plugins:
+  - serverless-python-requirements
+  - serverless-plugin-aws-alerts
+custom:
+  pythonRequirements:
+    dockerizePip: false
+  alerts:
+    stages:
+      - prod
+    topics:
+      alarm:
+        topic: ${self:service}-alarm
+        notifications:
+          - protocol: email
+            endpoint: triet@1ticket.com
+    definitions:
+      tooManySlowPortalTransactions:
+        description: 'slow transactions'
+        namespace: 'PERFORMANCE/PORTAL'
+        metric: PORTAL_SLOW_TRANSACTIONS
+        threshold: 15
+        statistic: Sum
+        period: 300
+        evaluationPeriods: 6
+        dimensions:
+          name: TRANSACTION
+          value: SLOW
+        comparisonOperator: GreaterThanOrEqualToThreshold
+    alarms:
+      - tooManySlowPortalTransactions
