@@ -11,10 +11,15 @@ logger.setLevel(logging.INFO)
 logging.config.dictConfig(settings.LOGGING_CONFIG)
 
 AGE_KEY = 'AGE_KEY'
-AGE_DEFAULT_VALUE = 18
 PREFIX_KEY = 'PREFIX_KEY'
-PREFIX_DEFAULT_VALUE = 'cwl-|firehose-|portal-'
 SNAPSHOT_REPOSITORY = 'snapshot-repository'
+
+LEVELS = {
+    # Index prefix: age in days
+    'cwl-|firehose-|portal-': 18,
+    '90-day-': 90 
+}
+
 
 credentials = boto3.Session().get_credentials()
 awsauth = AWS4Auth(credentials.access_key, credentials.secret_key, settings.AWS_REGION,
@@ -29,7 +34,7 @@ es = Elasticsearch(
 
 
 def filter(prefix, timestring, age):
-    ''' filter for indices older than X days '''
+    """Filter for indices older than X days."""
 
     ilo = curator.IndexList(es)
 
@@ -42,7 +47,7 @@ def filter(prefix, timestring, age):
 
 
 def filter_yesterday():
-    ''' filter for indices with yesterdays date '''
+    """Filter for indices with yesterdays date."""
 
     ilo = curator.IndexList(es)
 
@@ -57,7 +62,7 @@ def filter_yesterday():
 
 
 def snapshot(event, context):
-    ''' take a manual snapshot of indices from yesterday '''
+    """Take a manual snapshot of indices from yesterday."""
     ilo = filter_yesterday()
 
     logger.info(f'Indices to snapshot: {ilo.working_list()}')
@@ -72,31 +77,26 @@ def snapshot(event, context):
 
 
 def cleaner(event, context):
-    ''' remove indices that are older than X days '''
+    """Remove indices that are older than X days."""
+    todo = LEVELS
+    if event and AGE_KEY in event and PREFIX_KEY in event:
+        todo = {event[PREFIX_KEY]: event[AGE_KEY]}
 
-    age = AGE_DEFAULT_VALUE
-    prefix = PREFIX_DEFAULT_VALUE
+    for prefix, age in todo.items():
+        ilo = filter(prefix, '%Y.%m.%d', age)
 
-    if event:
-        if AGE_KEY in event:
-            age = event[AGE_KEY]
-        if PREFIX_KEY in event:
-            prefix = event[PREFIX_KEY]
+        logger.info(f'Indices to delete: {ilo.working_list()}')
 
-    ilo = filter(prefix, '%Y.%m.%d', age)
+        if ilo.working_list():
+            delete_indices = curator.DeleteIndices(ilo)
+            delete_indices.do_action()
+            logger.info("Deleted indices")
 
-    logger.info(f'Indices to delete: {ilo.working_list()}')
+        ilo = filter(prefix, '%Y-%m-%d', age)
 
-    if ilo.working_list():
-        delete_indices = curator.DeleteIndices(ilo)
-        delete_indices.do_action()
-        logger.info("Deleted indices")
+        logger.info(f'Indices to delete: {ilo.working_list()}')
 
-    ilo = filter(prefix, '%Y-%m-%d', age)
-
-    logger.info(f'Indices to delete: {ilo.working_list()}')
-
-    if ilo.working_list():
-        delete_indices = curator.DeleteIndices(ilo)
-        delete_indices.do_action()
-        logger.info("Deleted indices")
+        if ilo.working_list():
+            delete_indices = curator.DeleteIndices(ilo)
+            delete_indices.do_action()
+            logger.info("Deleted indices")
