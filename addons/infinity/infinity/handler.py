@@ -62,6 +62,9 @@ def save_stubhub_putpost_requests(event, context):
         to_date = dateformat + "T23:59:59"
         logger.info(f'reindexing entries from index {index_name}, filtering from {from_date} to {to_date}')
 
+        index_suffix = datetime.today().strftime('%Y-%m')
+        index = f'infinity-{index_suffix}'
+
         request_body = {
             "source": {
                 "index": index_name,
@@ -91,7 +94,7 @@ def save_stubhub_putpost_requests(event, context):
                 }
             },
             "dest": {
-                "index": "infinity"
+                "index": index
             }
         }
 
