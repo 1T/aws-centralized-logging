@@ -1,4 +1,4 @@
-# Sizing the 1Ticket Centralized Logging ElasticSearch cluster
+## Sizing the 1Ticket Centralized Logging ElasticSearch cluster
 
 In July 2018, we observed that we logged about 25GB a day, and we had the requirement to keep the log data "hot" for about 3 weeks.
 
@@ -17,7 +17,7 @@ We selected an ES cluster configuration of:
 
 The i3.large.elasticsearch instance has 475GB of storage, for a total of 1.8 TB for the 4 nodes.  We would have about 500 GB of free space.  The cost of the i3.large.elasticsearch instance is $0.163 per hour.  We bought 4 reserved instances, and the cluster as sized had been running smoothly.
 
-# Resizing the Centralized Logging ES cluster to accomodate new services
+## Resizing the Centralized Logging ES cluster to accomodate new services
 
 Over time, we have been adding new services, and even configuring existing services like the DTI Portal (5GB per day) to log to ES.  Currently, we're logging about 72GB a day.  On 5/24, we experienced an outage due to the disk of one of the data nodes filling up.  
 
