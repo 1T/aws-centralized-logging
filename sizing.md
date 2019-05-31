@@ -27,4 +27,4 @@ Disk storage needed
 72GB x 18 days x 2 replica x 1.45 overhead factor = 3.8 TB
 ```
 
-To support the new logging volume, we'll need 8 data nodes, which will give us 3.8 TB.  To reduce the storage required, we can reduce the number of retention days to 14 days, resulting in 3.0 TB required.
+To support the new logging volume, we'll need 8 i3.large.elasticsearch data nodes, which will give us 3.8 TB.  (We want to stay with i3.large.elasticsearch to utilize the reserved instances).  To reduce the storage required and have some buffer, we can reduce the number of retention days to 14 days, resulting in 3.0 TB required.
