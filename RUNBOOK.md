@@ -104,3 +104,7 @@ The free storage space threshold is per node.  ElasticSearch tries to distribute
 ## Infinity index
 
 We need to keep some log data around for an extended period.  For example, log entries related to event creation transactions on Stubhub must be kept in ElasticSearch for a year.  Our Broker Services members must search in Kibana to find requests/responses to Stubhub to prove to our customers that we're not at fault.  Refer to this page about the [infinity index](https://github.com/1T/aws-centralized-logging/tree/master/addons/infinity)
+
+## Firehose delivery error
+
+We publish logging data to the Centralized Logging Elastic Search cluster through Kinesis Firehose. When there's a problem with the Elastic Search cluster, Firehose will deliver the data to S3, in the oneticketlogging-failoverbucket-ppfqywud73by/elasticsearch-failed S3 bucket (see the Firehose configuration in 1ticketlogging).  See this [page](https://docs.aws.amazon.com/firehose/latest/dev/basic-deliver.html#retry) for how to recover that data.
