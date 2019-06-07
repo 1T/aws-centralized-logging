@@ -4,6 +4,13 @@ The AWS Centralized Logging Solution is a reference implementation that provides
 ## Getting Started
 To get started with the AWS Centralized Logging Solution, please review the solution documentation. https://aws.amazon.com/answers/logging/centralized-logging/
 
+Note, see this updated diagram of the AWS Centralized Logging Solution that shows the sources of the data to Elastic Search.  Basically, we have lambda services that log via:
+
+1. Python print, which goes to CloudWatch, then to ES
+2. OneTicket logging, which publishes to ES through Firehose streams
+
+![Centralized Logging Sources](https://github.com/1T/aws-centralized-logging/blob/master/docs/CentralizedLoggingSources.png)
+
 ## Running unit tests for customization
 * Clone the repository, then make the desired code changes
 * Next, run unit tests to make sure added customization passes the tests
